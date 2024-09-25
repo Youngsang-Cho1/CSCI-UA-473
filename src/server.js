@@ -1,4 +1,4 @@
-import * as webLib from './web-lib.mjs';
+import * as webLib from './web-lib.js';
 import * as path from "path";
 import * as fs from "fs";
 
