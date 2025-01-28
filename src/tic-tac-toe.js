@@ -11,7 +11,7 @@ function generateBoard(rows, cols, initialValue) {
 function boardFromString(s) {
   const validChar = "XO ";
   const boardArray = s.split("");
-  for (i of boardArray) {
+  for (let i of boardArray) {
     if (!validChar.includes(i)) {
       return null;
     }
@@ -38,18 +38,31 @@ function indexToRowCol(board, i) {
 }
 
 function setBoardCell(board, letter, row, col) {
-  const copy = board[0, -1];
+  const copy = board.slice()
   const size = Math.sqrt(board.length);
-  board[row * size + col] = letter;
-  return board;
+  copy[row * size + col] = letter;
+  return copy; //error fixed
 }
 
 function algebraicToRowCol(algebraicNotation) {
-  
-
+  const maxSize = 26;
+  const row = algebraicNotation.charCodeAt(0) - 65;
+  const col = parseInt(algebraicNotation.slice(1), 10) - 1;
+  if (0 <= row && row < maxSize && 0 <= col && col < maxSize) {
+    return {"row" : row, "col" : col}
+  }
+  else {
+    return undefined
+  }
 }
 
 function placeLetter(board, letter, algebraicNotation) {
+  const size = Math.sqrt(board.length)
+  const copy = board.slice()
+  const row = algebraicNotation.charCodeAt(0) - 65;
+  const col = parseInt(algebraicNotation.slice(1), 10) - 1;
+  copy[row * size + col] = letter;
+  return copy;
 
 }
 
