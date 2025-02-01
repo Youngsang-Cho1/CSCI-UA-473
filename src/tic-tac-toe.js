@@ -37,6 +37,15 @@ function indexToRowCol(board, i) {
   return {"row" : row, "col" : col};
 }
 
+function indexToAlgebraic(board, i) {
+  const size = Math.sqrt(board.length);
+  const row = Math.floor(i/size);
+  const col = i % size;
+  const algebraicNotation = String.fromCharCode(row+65) + (col+1);
+  return algebraicNotation;
+}
+
+
 function setBoardCell(board, letter, row, col) {
   const copy = board.slice();
   const size = Math.sqrt(board.length);
@@ -183,5 +192,6 @@ export {
   getWinner,
   isBoardFull,
   isValidMove,
+  indexToAlgebraic
 };
 
