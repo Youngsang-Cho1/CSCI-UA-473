@@ -13,19 +13,23 @@ function userMove(board) {
 }
 
 function computerMove(board, computerMoves) {
-    const store = [];
-    
-    if (computerMoves.length > 0) {
-        return computerMoves.shift();
-    } else {
-        for (let i = 0; i < board.length; i++) {
-            if (board[i] === " ") {
-                store.push(i);
-            }
+    while (computerMoves.length > 0) {
+        const testMove = computerMoves[0];
+        const {row, col} = tic.algebraicToRowCol(testMove);
+        if (board[tic.rowColToIndex(board, row, col)] === " ") {
+            return computerMoves.shift();
         }
-        const randomIndex = Math.floor(Math.random() * store.length);
-        return tic.indexToAlgebraic(board, store[randomIndex]);
+        computerMoves.shift() 
     }
+    const store = [];
+    for (let i = 0; i < board.length; i++) {
+        if (board[i] === " ") {
+            store.push(i);
+        }
+    }
+    const randomIndex = Math.floor(Math.random() * store.length);
+    return tic.indexToAlgebraic(board, store[randomIndex]);
+    
 }
 
 function printBoard(board) {
@@ -100,14 +104,21 @@ function main() {
             computerLetter = info.computerLetter;
             computerMoves = info.computerMoves;
 
+            if (computerMoves.length > 0) {
+                console.log(`computer will make the following moves: [${computerMoves}]`);
+            }
+            console.log(`Player is ${playerLetter}, Computer is ${computerLetter}`);
+            printBoard(board);
             startGame(board, playerLetter, computerLetter, computerMoves);
         });
     } else {
         board = tic.generateBoard(3, 3, ' ');
+        console.log(`Player is ${playerLetter}, Computer is ${computerLetter}`);
+        printBoard(board);
         startGame(board, playerLetter, computerLetter, computerMoves);
     }
 }
 
 main();
 // cd desktop/homework01-Youngsang-Cho1-1
-// node app.js
+// node app.js testWidthFive.json
