@@ -55,7 +55,7 @@ function setBoardCell(board, letter, row, col) {
 
 function algebraicToRowCol(algebraicNotation) {
   const maxSize = 26;
-  if (algebraicNotation[0] < 'A' || algebraicNotation[0] > 'Z' || !(/^\d+$/.test(algebraicNotation[1])) ){
+  if (algebraicNotation[0] < 'A' || algebraicNotation[0] > 'Z' || !(/^\d+$/.test(algebraicNotation.slice(1))) ){
     return undefined;
   }
   const row = algebraicNotation.charCodeAt(0) - 65;
