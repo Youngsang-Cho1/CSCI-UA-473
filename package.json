@@ -1,0 +1,34 @@
+{
+  "name": "homework02-youngsang-cho1",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyu-csci-ua-0467-001-002-spring-2025/homework02-Youngsang-Cho1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nyu-csci-ua-0467-001-002-spring-2025/homework02-Youngsang-Cho1/issues"
+  },
+  "homepage": "https://github.com/nyu-csci-ua-0467-001-002-spring-2025/homework02-Youngsang-Cho1#readme",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "chai": "^5.1.2",
+    "eslint": "^9.19.0",
+    "eslint-plugin-mocha": "^10.5.0",
+    "globals": "^15.14.0",
+    "mocha": "^11.1.0",
+    "mocha-sinon": "^2.1.2",
+    "sinon": "^19.0.2"
+  }
+}
