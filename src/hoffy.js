@@ -93,3 +93,5 @@ export {
     stringFieldToList,
     rowsToObjects
 }
+
+// cd desktop/homework02-Youngsang-Cho1
