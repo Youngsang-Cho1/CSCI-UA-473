@@ -6,7 +6,7 @@ class GenericElement{
         this.name = name;
         this.attributes = {};
         this.children =[];
-        this.content = ""
+        this.content = "";
     }
     addAttr(name, value) {
         this.attributes[name] = value;
@@ -45,7 +45,7 @@ class GenericElement{
     }
 
     write(fileName, cb){
-        fs.writeFile(fileName, this.toString(), 'utf-8', cb)
+        fs.writeFile(fileName, this.toString(), 'utf-8', cb);
     }
 }
 
@@ -67,14 +67,14 @@ class RectangleElement extends GenericElement {
     }
 }
 
-class TextElement  extends GenericElement {
+class TextElement extends GenericElement {
     constructor(x, y, fontSize, fill, content) {
         super("text");
         this.addAttr("x", x);
         this.addAttr("y", y);
         this.addAttr("font-size", fontSize);
         this.addAttr("fill", fill);
-        this.content = content
+        this.content = content;
     }
 
 }
@@ -109,4 +109,4 @@ export {
     RootElement,
     RectangleElement,
     TextElement
-}
+};

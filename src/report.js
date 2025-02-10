@@ -24,7 +24,7 @@ fs.readFile(filePath, 'utf-8', (err, data) => {
 
         const songs = hoffy.rowsToObjects({data: { headers, rows }});
 
-        const validSongs = songs.filter(song => song.hasOwnProperty("artist(s)_name") && song["artist(s)_name"] !== undefined);
+        const validSongs = songs.filter(song => Object.prototype.hasOwnProperty.call(song, "artist(s)_name") && song["artist(s)_name"] !== undefined);
         const updatedSongs = validSongs.map(song => hoffy.stringFieldToList(song, "artist(s)_name"));
 
         const mostListened = spotify.mostStreamed(updatedSongs);
@@ -39,7 +39,7 @@ fs.readFile(filePath, 'utf-8', (err, data) => {
         .sort((a,b) => b[1]-a[1])
         .slice(0,3);
 
-        console.log(top3Artists)
+        console.log(top3Artists);
 
         const rootSvg = new drawing.RootElement();
         rootSvg.addAttrs({width: 1000, height: 600});
@@ -48,23 +48,25 @@ fs.readFile(filePath, 'utf-8', (err, data) => {
         const barWidth = 200;
         const maxCount = top3Artists[0][1];
 
+        const colors = ["#E77D3B", "#6F9C99", "#5B6F3A"];
+
         const items = top3Artists.map(([artist, count], idx) => {
             const height = (count/maxCount) * maxHeight;
-            const x = idx * (barWidth + 20); 
-            const y = maxHeight - height; 
+            const x = idx * (barWidth + 50); 
+            const y = maxHeight - height;
+            const rectangleElem = new drawing.RectangleElement(x, y, barWidth, height, colors[idx]);
+            const textElem = new drawing.TextElement(x + barWidth / 2, maxHeight + 20, 14, "black", `${artist}, ${count}`);
+            textElem.addAttr("text-anchor", "middle");
 
-            return [
-                new drawing.RectangleElement(x, y, barWidth, height, "blue"), 
-                new drawing.TextElement(x + barWidth / 2, maxHeight + 20, 14, "black", `${artist}, ${count}`) 
-            ];
+            return [rectangleElem, textElem];
         });
 
         rootSvg.children = hoffy.myFlatten(items);
 
 
-        rootSvg.write("artists.svg", () => console.log("SVG file created!"));
+        rootSvg.write("artists.svg", () => console.log("SVG file has been created."));
 
-    })
+    });
 
 }
     

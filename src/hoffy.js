@@ -6,7 +6,7 @@ function getEvenParam(...args) {
     if (args.length <= 0) {
         return [];
     }
-    return arguments.filter((arg, idx) => idx % 2 == 0);
+    return arguments.filter((arg, idx) => idx % 2 === 0);
 }
 
 function myFlatten(arr2d) {
@@ -18,7 +18,7 @@ function myFlatten(arr2d) {
 
 function maybe(fn) {
     return (...args) => {
-        const store = args.filter( arg =>  arg === null || arg === undefined)
+        const store = args.filter( arg => arg === null || arg === undefined);
         if (store.length > 0) {
             return undefined;
         }
@@ -28,12 +28,12 @@ function maybe(fn) {
 
 function filterWith(fn) {
     return (arg) => {
-        return arg.filter(fn)
-    }
+        return arg.filter(fn);
+    };
 }
 
 function repeatCall(fn, n, arg) {
-    if (n == 0){
+    if (n === 0){
         return;
     }
     fn(arg);
@@ -45,12 +45,12 @@ function limitCallsDecorator(fn, n) {
     return (...args) => {
         if (counter < n) {
             counter ++;
-            return (fn(...args))
+            return (fn(...args));
         }
         else {
             return undefined;
         }
-    }
+    };
 }
 
 function myReadFile(fileName, successFn, errorFn) {
@@ -61,7 +61,7 @@ function myReadFile(fileName, successFn, errorFn) {
         else {
             errorFn(err);
         }
-    })
+    });
 }
 
 function stringFieldToList(data, key) {
@@ -92,6 +92,6 @@ export {
     myReadFile,
     stringFieldToList,
     rowsToObjects
-}
+};
 
 // cd desktop/homework02-Youngsang-Cho1
