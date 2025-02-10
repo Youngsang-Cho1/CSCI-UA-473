@@ -74,12 +74,12 @@ function rowsToObjects({data}) {
     const headers = data.headers;
     const rows = data.rows;
 
-    return rows.map(row => {
+    return rows.map(row => 
         headers.reduce((obj, header, idx) => {
             obj[header] = row[idx];
             return obj;
         }, {})
-    })
+    );
 }
 
 export {
