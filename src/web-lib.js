@@ -103,13 +103,37 @@ class HTTPServer {
     }
 
     handleConnection(sock) {
-        sock.on("data", data => this.handleRequest(sock, data));
+        sock.on("data", data => {
+            console.log(`Received data: ${data.toString()}`); 
+            this.handleRequest(sock, data);
+        });
+    
+        sock.on("error", (err) => {
+            console.error("Socket Error:", err);
+        });
+    
+        sock.on("close", () => {
+            console.log("Connection closed");
+        });
     }
 
     handleRequest(sock, binaryData) {
+        
         const req = new Request(binaryData.toString());
         const res = new Response(sock);
         const reqPathFull = path.join(this.rootDirFull, req.path);
+
+        if (this.redirectMap[req.path]) {
+
+            const newPath = this.redirectMap[req.path];
+
+            res.status(308);
+            res.setHeader("Location", newPath);
+            res.send(`Redirecting to <a href="${newPath}">${newPath}</a>`);
+            return ;
+        }
+
+
 
         // TODO: (see homework specification for details)
         // 0. implementation can start here, but other classes / methods can be modified or added
@@ -128,4 +152,4 @@ export {
     HTTPServer
 };
 
-// cd desktop/homework03-Youngsang-Cho1
+// cd desktop/homework03-Youngsang-Cho1/src
