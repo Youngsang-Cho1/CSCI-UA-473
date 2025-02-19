@@ -123,6 +123,7 @@ class HTTPServer {
         const res = new Response(sock);
         const reqPathFull = path.join(this.rootDirFull, req.path);
 
+        //redirect
         if (this.redirectMap[req.path]) {
 
             const newPath = this.redirectMap[req.path];
@@ -133,15 +134,57 @@ class HTTPServer {
             return ;
         }
 
+        fs.access(reqPathFull, fs.constants.F_OK, (err) => {
+            if (err) {
+                console.error(`File not found: ${req.path}`);
+                res.status(404);
+                res.send("404 Not Found");
+                return;
+            }
+    
+            
+            fs.stat(reqPathFull, (err, stats) => {
+                if (err) {
+                    console.error(`Error accessing file: ${reqPathFull}`, err);
+                    res.status(500);
+                    res.send("500 Internal Server Error");
+                    return;
+                }
 
+                //if directory
+                if (stats.isDirectory()) {
+                    // provide list in the directory (folder?)
+                    fs.readdir(reqPathFull, { withFileTypes: true }, (err, files) => {
+                        if (err) {
+                            console.error(`Error reading directory: ${reqPathFull}`, err);
+                            res.status(500);
+                            res.send("500 Internal Server Error");
+                            return;
+                        }
+                        
+                        // unpacking the folder
+                        let body = "<html><body><ul>";
+                        files.forEach(file => {
+                            const slash = "";
+                            if (file.isDirectory()) {
+                                slash = "/";
+                            }
+                            body += `<li><a href="${req.path}/${file.name}${slash}">${file.name}${slash}</a></li>`;
+                        });
+                        body += "</ul></body></html>";
+    
+                        res.status(200);
+                        res.setHeader("Content-Type", "text/html");
+                        res.send(body);
+                    });
+                } 
+                else {
+                    // not a directory... markdown -> html, or static...
+                   
+                };
+            });
+        });
 
-        // TODO: (see homework specification for details)
-        // 0. implementation can start here, but other classes / methods can be modified or added
-        // 1. handle redirects first
-        // 2. if not a redirect and file/dir does not exist send back not found
-        // 3. if file, serve file
-        // 4. if dir, generate page that lists files and dirs contained in dir
-        // 5. if markdown, compile and send back html
     }
 }
 
