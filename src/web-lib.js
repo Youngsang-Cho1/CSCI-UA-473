@@ -142,7 +142,7 @@ class HTTPServer {
                 return;
             }
     
-            
+            //if directory
             fs.stat(reqPathFull, (err, stats) => {
                 if (err) {
                     console.error(`Error accessing file: ${reqPathFull}`, err);
@@ -150,8 +150,7 @@ class HTTPServer {
                     res.send("500 Internal Server Error");
                     return;
                 }
-
-                //if directory
+    
                 if (stats.isDirectory()) {
                     // provide list in the directory (folder?)
                     fs.readdir(reqPathFull, { withFileTypes: true }, (err, files) => {
@@ -165,7 +164,7 @@ class HTTPServer {
                         // unpacking the folder
                         let body = "<html><body><ul>";
                         files.forEach(file => {
-                            const slash = "";
+                            let slash = "";
                             if (file.isDirectory()) {
                                 slash = "/";
                             }
@@ -177,15 +176,47 @@ class HTTPServer {
                         res.setHeader("Content-Type", "text/html");
                         res.send(body);
                     });
-                } 
-                else {
+                } else {
                     // not a directory... markdown -> html, or static...
-                   
-                };
+                    const fileExtension = getExtension(reqPathFull);
+                    if (fileExtension === "md" || fileExtension === "markdown") {
+                        fs.readFile(reqPathFull, 'utf-8', (err, data) => {
+                            if (err) {
+                                console.error(`Error reading file: ${reqPathFull}`, err);
+                                res.status(500);
+                                res.send("500 Internal Server Error");
+                                return ;
+                            }
+
+                            console.log(`Markdown File: ${req.path}`);
+                            const markdown = new MarkdownIt({ html: true });
+                            const renderedHtml = markdown.render(data);
+                            res.status(200);
+                            res.setHeader("Content-Type", "text/html");
+                            res.send(renderedHtml);
+                        });
+                    }
+                    // provide static file
+                    else {
+                        fs.readFile(reqPathFull, (err, data) => {
+                            if (err) {
+                                console.error(`Error reading file: ${reqPathFull}`, err);
+                                res.status(500);
+                                res.send("500 Internal Server Error");
+                                return;
+                            }
+        
+                            res.status(200);
+                            res.setHeader("Content-Type", getMIMEType(reqPathFull));
+                            res.send(data);
+                        });
+                    }
+                    
+                }
             });
         });
-
     }
+
 }
 
 
@@ -195,4 +226,4 @@ export {
     HTTPServer
 };
 
-// cd desktop/homework03-Youngsang-Cho1/src
+// cd desktop/homework03-Youngsang-Cho1
