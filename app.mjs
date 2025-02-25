@@ -27,19 +27,85 @@ readFile ('code-samples/question-bank.json', 'utf-8', (err, data) => {
 
 
 export const decorate = (answer, correct) => {
-    return ""
+    if (correct) {
+        return `<span class="correct-answer">${answer}</span>`;
+    }
+    return `<span class="incorrect-answer">${answer}</span>`;
 }
 
 app.use((req, res, next) => {
     console.log(`Method: ${req.method}`)
     console.log(`Path: ${req.path}`)
-    console.log(`Query: ${req.query}`)
+    console.log(`Query:`, JSON.stringify(req.query, null, 2))
     next()
 })
-
+app.get('/', (req, res) => {
+    res.redirect('/quiz');
+});
 
 app.get('/quiz', (req, res) => {
-    res.render('quiz')
+    if (queries.length === 0){
+        return res.render('quiz', {error: "No question available"})
+    }
+    const randIndex = Math.floor(Math.random() * queries.length);
+    const returnVal = queries[randIndex];
+
+    res.render('quiz', {
+        question : returnVal.question,
+        id : returnVal.id
+    })
+})
+
+app.post('/quiz', (req, res) => {
+    const {answer, id} = req.body;
+    const question = queries.find(q => q.id === id)
+
+    if (!question) {
+        return res.render('quiz', { error: "No matching question ID." })
+    }
+
+    const userAnswer = answer.split(',').map(item => item.trim());
+    const correctAnswer = question.answers.map(item => item.trim());
+
+    const userAnswerLower = userAnswer.map(item => item.toLowerCase());
+    const correctAnswerLower = correctAnswer.map(item => item.toLowerCase());
+
+    let answerDict = {}
+
+    let decoratedAnswer = []
+    let correctCounter = 0;
+
+    for (let i = 0; i < userAnswerLower.length; i++) {
+        if (correctAnswerLower.includes(userAnswerLower[i]) && !(answerDict.hasOwnProperty(userAnswerLower[i]))) {
+            correctCounter ++;
+            let original = correctAnswer.find(a => a.toLowerCase() === userAnswerLower[i]);
+            answerDict[userAnswerLower[i]] = 1;
+            decoratedAnswer.push(decorate(original, true));
+        }
+        else {
+            decoratedAnswer.push(decorate(userAnswer[i], false));
+        }
+    }
+    let status
+
+    if (correctCounter === correctAnswer.length && userAnswer.length === correctAnswer.length) {
+        status = "Correct";
+    }
+    else if (correctCounter === 0 ){
+        status = "Incorrect";
+    }
+    else {
+        status = "Partially Correct";
+    }
+
+    res.render('quiz', {
+        question : question.question,
+        id : question.id,
+        userAnswer : answer,
+        correction: decoratedAnswer.join(', '),
+        status: status
+    });  
+
 })
 
 app.get('/questions', (req, res) => {
@@ -69,3 +135,4 @@ server = app.listen(3000, () => {
     console.log("Server started; type CTRL+C to shut down");
 });
 // cd desktop/homework04-Youngsang-Cho1
+// npx mocha tests/app-test.mjs

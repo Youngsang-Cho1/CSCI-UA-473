@@ -48,3 +48,17 @@ button {
     font-size: 18px;
     border-radius: 5px;
 }
+
+.correct-answer {
+    background-color: green;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+}
+
+.incorrect-answer {
+    background-color: red;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+}
