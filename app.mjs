@@ -57,7 +57,12 @@ app.get('/questions', (req, res) => {
     res.render('questions', { queries : filtQueries });
 });
 
-
+app.post('/questions', (req,res) => {
+    const {question, genre, answers} = req.body;
+    const newQuestion = new Query (uuidv4(), question, genre, answers.split(","));
+    queries.push(newQuestion);
+    res.redirect("/questions")
+})
 
 
 server = app.listen(3000, () => {
