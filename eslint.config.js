@@ -9,8 +9,8 @@ export default [
     languageOptions: { globals: globals.node },
     plugins: {mocha: mochaPlugin},
     rules: {
-      'semi': [ 'error', 'always' ],
-      'no-var': [ 'error', ],
+      'semi': ['error', 'always'],
+      'no-var': ['error',],
       'prefer-const': ['error', { 'destructuring': 'any', 'ignoreReadBeforeAssign': false }],
       'curly': ['error'],
       'eqeqeq': ['error'],
