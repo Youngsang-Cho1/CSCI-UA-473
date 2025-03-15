@@ -24,28 +24,29 @@ const endAuthenticatedSession = req => {
 
 
 const register = async (username, email, password) => {
-
-  // TODO: implement registration (
-  // * check if username and password are both greater than 8
-  //   * if not, throw { message: 'USERNAME PASSWORD TOO SHORT' }
-  // * check if user with same username already exists
-  //   * if not, throw { message: 'USERNAME ALREADY EXISTS' }
-  // * salt and hash using bcrypt's sync functions
-  //   * https://www.npmjs.com/package/bcryptjs#usage---sync
-  // * if registration is successfull, return the newly created user
-  // return user;
+  if (username.length < 8 || password.length < 8) {
+    throw { message: 'USERNAME PASSWORD TOO SHORT' };
+}
+  const usernameExist = await User.findOne({ username });
+  if (!usernameExist) {
+    throw { message: 'USERNAME ALREADY EXISTS' };
+  }
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const user = new User ({username, email, password: hashedPassword});
+  await user.save();
+  return user;
 };
 
 const login = async (username, password) => {
-
-  // TODO: implement login
-  // * find a user with a matching username
-  // * if username isn't found, throw { message: "USER NOT FOUND" }
-  // * use bcrypt's sync functions to check if passwords match
-  // * https://www.npmjs.com/package/bcryptjs#usage---sync
-  // * if passwords mismatch, throw{ message: "PASSWORDS DO NOT MATCH" }
-  // * however, if passwords match, return found user
-  // return user;
+  const user = await User.findOne({ username });
+  if (!user) {
+    throw { message: 'USER NOT FOUND' };
+  }
+  const passwordMatch = bcrypt.compareSync(password, user.password);
+  if (!passwordMatch) {
+    throw{ message: "PASSWORDS DO NOT MATCH" }
+  }
+  return user;
 };
 
 export  {

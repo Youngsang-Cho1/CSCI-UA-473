@@ -10,12 +10,10 @@ const UserSchema = new mongoose.Schema({
 });
 
 const ArticleSchema = new mongoose.Schema({
-  // TODO: finish this ArticleSchema so that it:
-  // * contains a title, url, and descripition
-  // * contains a user property that references a User document
-
-
-  // end TODO
+  title : {type: String, required: true},
+  url : {type: String, required: true},
+  description : {type: String, required: true},
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, {timestamps: true});
 
 UserSchema.plugin(mongooseSlugPlugin, {tmpl: '<%=username%>'});
