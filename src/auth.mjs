@@ -32,7 +32,7 @@ const register = async (username, email, password) => {
     throw { message: 'USERNAME ALREADY EXISTS' };
   }
   const hashedPassword = bcrypt.hashSync(password, 10);
-  const user = new User ({username, email, password: hashedPassword});
+  const user = new User({username, email, password: hashedPassword});
   await user.save();
   return user;
 };
@@ -44,12 +44,12 @@ const login = async (username, password) => {
   }
   const passwordMatch = bcrypt.compareSync(password, user.password);
   if (!passwordMatch) {
-    throw{ message: "PASSWORDS DO NOT MATCH" }
+    throw{ message: "PASSWORDS DO NOT MATCH" };
   }
   return user;
 };
 
-export  {
+export {
   startAuthenticatedSession,
   endAuthenticatedSession,
   register,

@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
     await auth.startAuthenticatedSession(req, user);
     res.redirect('/'); 
   } catch(err) {
-    console.log(err)
+    console.log(err);
     res.render('login', {message: loginMessages[err.message] ?? 'Login unsuccessful'}); 
   }
 });

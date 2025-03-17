@@ -1,5 +1,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
+import mochaPlugin from "eslint-plugin-mocha";
 
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -8,8 +9,8 @@ export default [
   {languageOptions: { globals: globals.node }},
   mochaPlugin.configs.flat.recommended,
   {rules: {
-      'semi': [ 'error', 'always' ],
-      'no-var': [ 'error', ],
+      'semi': ['error', 'always'],
+      'no-var': ['error',],
       'prefer-const': ['error', { 'destructuring': 'any', 'ignoreReadBeforeAssign': false }],
       'curly': ['error'],
       'eqeqeq': ['error'],
