@@ -28,7 +28,7 @@ const register = async (username, email, password) => {
     throw { message: 'USERNAME PASSWORD TOO SHORT' };
 }
   const usernameExist = await User.findOne({ username });
-  if (!usernameExist) {
+  if (usernameExist) {
     throw { message: 'USERNAME ALREADY EXISTS' };
   }
   const hashedPassword = bcrypt.hashSync(password, 10);

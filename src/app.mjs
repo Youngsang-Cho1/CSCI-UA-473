@@ -76,6 +76,13 @@ app.post('/article/add', async (req, res) => {
   }
 });
 
+app.get('/article/:paramName', async (req, res) => {
+  const article = await Article.findOne({ slug: req.params.paramName }).populate('user');
+    if (!article) {
+        return res.status(404).send('Article not found');
+    }
+    res.render('article-detail', { article });
+});
 // TODO: respond to GET requests for a specific articl
 // * path is /article/name-of-article-as-slug
 //   * where name-of-article-as-slug will vary
