@@ -4,21 +4,31 @@ document.querySelector(".result").classList.add("hidden");
 document.querySelector(".reset").classList.add("hidden");   
 document.querySelector(".error-message").classList.add("hidden");    
 
-const startButton = document.querySelector(".play-btn")
+let turnUsed;
 
+const startButton = document.querySelector(".play-btn")
+const errButton = document.querySelector(".error-btn") 
+errButton.addEventListener('click', function() {
+    document.querySelector("#card-faces").value = "";
+    document.querySelector("#total-cards").value = "";
+    document.querySelector("#max-turns").value = "";
+    document.querySelector(".error-message").classList.add("hidden");  
+});
+
+const resetButton = document.querySelector(".reset-btn")
+resetButton.addEventListener("click", function() {
+    document.querySelector(".game").classList.add("hidden");
+    document.querySelector(".result").classList.add("hidden");
+    document.querySelector(".reset").classList.add("hidden");
+    document.querySelector(".start").classList.remove("hidden");
+    turnUsed.remove();
+    document.querySelector(".result").removeAttribute("style");
+});
 
 startButton.addEventListener('click', function() {
     const preset = document.querySelector("#card-faces").value
     const cardNum = Number(document.querySelector("#total-cards").value);
     const turnNum = Number(document.querySelector("#max-turns").value);
-
-    const errButton = document.querySelector(".error-btn") 
-    errButton.addEventListener('click', function() {
-        document.querySelector("#card-faces").value = "";
-        document.querySelector("#total-cards").value = "";
-        document.querySelector("#max-turns").value = "";
-    });
-    
 
     if (cardNum % 2 != 0 || cardNum < 2 || cardNum > 36) {
         document.querySelector(".error-message").classList.remove("hidden");
@@ -50,12 +60,25 @@ startButton.addEventListener('click', function() {
         }
         generateBoard(cardNum, presetList, turnNum)
     }
-    //else... random symbols
+    if (!preset) {
+        const mySymbols = ["😀", "😗", "😅", "🤣", "😍", "😝", "😣", "🤩", "😏", "😡", "😓", "🫣", "🤥", "🤢", "🤮", "🫥", "😵‍💫", "😳", "🥶", "🤖"]
+        let randomSymbols = []
+        for (let i = 0; i < cardNum/2; i++) {
+            const randomIdx = Math.floor(Math.random() * mySymbols.length)
+            randomSymbols.push(mySymbols[randomIdx])
+            randomSymbols.push(mySymbols[randomIdx])
+            mySymbols.splice(randomIdx, 1)
+        }
+        generateBoard(cardNum, randomSymbols, turnNum)
+    }
     
 });
 
 function generateBoard(cardNum, symbols, turnNum) {
     document.querySelector(".start").classList.add("hidden");
+    document.querySelector(".result").classList.remove("hidden");
+    document.querySelector(".error-message").classList.add("hidden"); 
+    
 
     const gameBoard = document.querySelector(".game");
     gameBoard.innerHTML = ""; 
@@ -63,13 +86,28 @@ function generateBoard(cardNum, symbols, turnNum) {
 
     const result = document.querySelector(".result");
     result.innerHTML = "";
+
+    const quitButton = document.createElement("button");
+    quitButton.innerText = "quit";
+    result.appendChild(quitButton);
+
     const resultMessage = document.createElement("p");
     resultMessage.classList.add("message");
+    resultMessage.classList.add("hidden");
     const okButton = document.createElement("button");
     okButton.innerText = "OK";
     okButton.classList.add("hidden");
     result.appendChild(resultMessage);
     result.appendChild(okButton);
+
+
+    quitButton.addEventListener('click', function() {
+        document.querySelector(".game").classList.add("hidden");
+        document.querySelector(".result").classList.add("hidden");
+        document.querySelector(".reset").classList.add("hidden");
+        document.querySelector(".start").classList.remove("hidden");
+        turnUsed.remove();
+    })
     
     const columns = Math.ceil(Math.sqrt(cardNum));
     const cardWidth = 80
@@ -81,7 +119,11 @@ function generateBoard(cardNum, symbols, turnNum) {
     let turnCounter = 0;
     let matchedCounter = 0;
 
-    const turnUsed = document.createElement("h2");
+    const oldTurnUsed = document.querySelector(".turn-used");
+    if (oldTurnUsed){
+        oldTurnUsed.remove();
+    } 
+    turnUsed = document.createElement("h2");
     gameBoard.parentElement.insertBefore(turnUsed, gameBoard);
 
     for (let i = 0; i < cardNum; i++) {
@@ -112,17 +154,20 @@ function generateBoard(cardNum, symbols, turnNum) {
         turnCounter++;
         turnUsed.innerHTML = `Turn Used: ${turnCounter}/${turnNum}`;
         const [card1, card2] = flippedCard;
+        quitButton.classList.add("hidden");
         if (card1.innerText === card2.innerText) {
             matchedCounter++;
             resultMessage.innerText = "Matches. Press OK";
-            result.classList.remove("hidden");
+            resultMessage.classList.remove("hidden");
+            okButton.classList.remove("hidden");
             card1.classList.add("matched");
             card2.classList.add("matched");
             isMatched = true;
         }
         else {
             resultMessage.innerText = "Does not match. Press OK";
-            result.classList.remove("hidden");
+            resultMessage.classList.remove("hidden");
+            okButton.classList.remove("hidden");
             isMatched = false;
 
         }
@@ -130,11 +175,13 @@ function generateBoard(cardNum, symbols, turnNum) {
     }
 
     okButton.addEventListener("click", function() {
+        quitButton.classList.remove("hidden");
         okButton.classList.add("hidden");
         resultMessage.innerText = "";
-        result.classList.add("hidden");   
+        resultMessage.classList.add("hidden");  
 
         if (matchedCounter * 2 === cardNum) {
+            turnUsed.classList.add("hidden")
             gameBoard.classList.add("hidden")
             result.innerHTML = `You won! <br> Turns: ${turnCounter}/${turnNum}`
             result.style.fontSize = "24px";
@@ -143,6 +190,7 @@ function generateBoard(cardNum, symbols, turnNum) {
             document.querySelector(".reset").classList.remove("hidden");
         }
         else if (turnCounter === turnNum && matchedCounter * 2 !== cardNum) {
+            turnUsed.classList.add("hidden")
             gameBoard.classList.add("hidden")
             result.innerHTML = `You lost! <br> Turns: ${turnCounter}/${turnNum}`
             result.style.fontSize = "24px";
@@ -167,14 +215,6 @@ function generateBoard(cardNum, symbols, turnNum) {
             }
             console.log("Turn:", turnCounter);
         }
-    });
-
-    document.querySelector(".reset-btn").addEventListener("click", function() {
-        document.querySelector(".game").classList.add("hidden");
-        document.querySelector(".result").classList.add("hidden");
-        document.querySelector(".reset").classList.add("hidden");
-        document.querySelector(".start").classList.remove("hidden");
-        turnUsed.remove();
     });
 }
 // cd desktop/homework06-Youngsang-Cho1
