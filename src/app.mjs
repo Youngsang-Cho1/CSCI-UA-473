@@ -13,7 +13,17 @@ app.use(express.static(path.join(__dirname, '..', 'public')))
 app.use(express.json());
 
 app.post('/questions/', async (req, res) => {
-  // TODO: finish implementation
+  const { question } = req.body;
+  if (!question || question.trim() === '') {
+    res.status(400).json({ error: 'Question is required' });
+    return;
+  }
+  try {
+    const q = await Question.create({ question, answers: [] });
+    res.json(q);
+  } catch (err) {
+    res.status(500).json({ error: 'Database error' });
+  }
 })
 
 app.post('/questions/:id/answers/', async (req, res) => {
@@ -32,3 +42,5 @@ app.get('/questions/', async (req, res) => {
 
 const port = process.env.PORT ?? 3000
 app.listen(port, () => {console.log(`Server is listening on ${port}`)})
+
+//cd desktop/homework07-Youngsang-Cho1
