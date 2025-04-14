@@ -23,15 +23,17 @@ const modalAnswer = document.querySelector('#modal-answer');
 const answerText = document.querySelector('#answer-text');
 const answerSubmitButton =  document.querySelector('#create-answer');
 
-const closeButton =  document.querySelector('.close');
+const closeButtons =  document.querySelectorAll('.close');
 
 newQuestionButton.addEventListener('click', function() {
   modalQuestion.style.display = 'block';
-})
+});
 
-closeButton.addEventListener('click', function(evt) {
-  evt.target.style.display = 'none';
-})
+closeButtons.forEach(btn => {
+  btn.addEventListener('click', function(evt) {
+    evt.target.closest('dialog').style.display = 'none';
+  });
+});
 
 questionSubmitButton.addEventListener('click', async function() {
   const text = questionText.value.trim();
@@ -43,27 +45,86 @@ questionSubmitButton.addEventListener('click', async function() {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({text})
+    body: JSON.stringify({question: text})
   }
 
   const res = await fetch(url, options);
-  const result = await res.json();
-  if (result.error) {
-    console.error('Error:', result.error);
+  const data = await res.json();
+  if (data.error) {
+    console.error('Error:', data.error);
     return;
   }
-
-  const newQuestionElem = createElement('section', { id: result._id }, 
+  const answerButton = createElement('button', { class: 'answer-btn' }, 'Add Answer');
+  answerButton.addEventListener('click', function(evt) {
+    const id = evt.target.closest('section').id;
+    console.log("Setting question id:", id); // debugging
+    document.querySelector('#question-id').value = id;
+    modalAnswer.style.display = 'block';
+  });
+  const ul = createElement('ul');
+  const newQuestionElem = createElement('section', { id: data._id }, 
     createElement('h2', {}, text),
-    createElement('ul'),
-    createElement('button', { class: 'answer-btn' }, 'Add Answer')
+    ul,
+    answerButton
     );
   main.appendChild(newQuestionElem)
   modalQuestion.style.display = 'none';
   questionText.value = '';
-})
+});
 
+answerSubmitButton.addEventListener('click', async function() {
+  const id = document.querySelector('#question-id').value; 
+  const text = answerText.value.trim();
+  if (!text) return;
 
+  const url = `/questions/${id}/answers`;
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({answer: text})
+  }
+  const res = await fetch(url, options);
+  const data = await res.json();
+  if (data.error) {
+    console.error('Error:', data.error);
+    return;
+  }
+  const sectionElem = document.getElementById(id); 
+  const ul = sectionElem.querySelector('ul'); 
+  ul.appendChild(createElement('li', {}, text));
+
+  modalAnswer.style.display = 'none';
+  answerText.value = '';
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const res = await fetch('/questions');
+  const questions = await res.json();
+
+  questions.forEach(question => {
+    const ul = createElement('ul');
+    question.answers.forEach(a => {
+      ul.appendChild(createElement('li', {}, a));
+    });
+
+    const answerButton = createElement('button', { class: 'answer-btn' }, 'Add Answer');
+    answerButton.addEventListener('click', function(evt) {
+      document.querySelector('#question-id').value = question._id;
+      modalAnswer.style.display = 'block';
+    });
+
+    const section = createElement(
+      'section', { id: question._id },
+      createElement('h2', {}, question.question),
+      ul,
+      answerButton
+    );
+
+    main.appendChild(section);
+  });
+});
 
 
 

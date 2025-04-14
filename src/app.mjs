@@ -19,7 +19,7 @@ app.post('/questions/', async (req, res) => {
     return;
   }
   try {
-    const q = await Question.create({ question, answers: [] });
+    const q = await Question.create({ question: question, answers: [] });
     res.json(q);
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
@@ -37,8 +37,14 @@ app.post('/questions/:id/answers/', async (req, res) => {
 })
 
 app.get('/questions/', async (req, res) => {
-  // TODO: finish implementation
-})
+  try {
+    const questions = await Question.find({});
+    res.json(questions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch questions' });
+  }
+});
 
 const port = process.env.PORT ?? 3000
 app.listen(port, () => {console.log(`Server is listening on ${port}`)})
