@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<h1>Questionnaire</h1>
+
+<form method = "GET" action = "/questions">
+<input type = "text" id = "search" name ="search" required>
+<button type = "submit">Search</button>
+</form>
+
+<ul>
+{{#each queries}}
+    <li>
+        <strong>{{this.question}}</strong> ({{this.genre}})
+        <br>Answers: {{this.answers}}
+    </li>
+{{/each}}
+</ul>
+
+<form method = "POST" action = "/questions">
+<input type = "text" name = "question">
+<input type = "text" name = "genre">
+<input type = "text" name = "answers">
+<button type = "submit">Add</button>
+</form>

@@ -1,0 +1,64 @@
+/* Add all your CSS here */
+body {
+    width: 100%;
+    background-color: skyblue;
+    text-align: center;
+    font-family: Tahoma;
+    font-size:20px;
+}
+
+header {
+    background-color: white;
+    padding: 30px;
+    color: grey;
+}
+
+header img {
+    width: 100px;
+    height: 100px;
+    vertical-align: middle;
+}
+
+nav {
+    display: flex;
+    gap: 15px;
+}
+
+nav a {
+    color: navy;
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+h1 {
+    color: greenyellow;
+}
+
+form {
+    margin-top: 20px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.correct-answer {
+    background-color: green;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+}
+
+.incorrect-answer {
+    background-color: red;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+}
